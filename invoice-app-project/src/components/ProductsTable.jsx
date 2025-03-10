@@ -1,4 +1,4 @@
-export const ProductsTable = ({items}) => {
+export const ProductsTable = ({items, handler}) => {
 
   return (
     <>
@@ -19,8 +19,7 @@ export const ProductsTable = ({items}) => {
         
         {/* TABLE BODY: CONTENT */}
         <tbody>
-          {
-            items.map( ({ refe, product, price, quantity }, index) => (
+          { items.map( ({ refe, product, price, quantity }, index) => (
               <tr>
                 <td>{ index + 1 }</td>
                 <td>{ refe }</td>
@@ -28,10 +27,11 @@ export const ProductsTable = ({items}) => {
                 <td className="text-center">${ price }</td>
                 <td className="text-center">{ quantity }</td>
                 <td className="text-center">${ quantity * price }</td>
-                <td className="text-center"><button className="btn btn-danger btn-sm">X</button></td>
+                <td className="text-center">
+                  <button className="btn btn-danger btn-sm" onClick={() => handler(index)}>X</button>
+                </td>
               </tr>
-            ) )
-          }
+            ) ) }
           {/* <tr>
             <td>1</td>
             <td>K-1561</td>

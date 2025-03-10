@@ -5,6 +5,7 @@ import { ClientDetails } from "./components/ClientDetails";
 import { ProductsTable } from "./components/ProductsTable";
 import { InvoiceTotal } from "./components/InvoiceTotal";
 import { calculateTotal } from "./services/calculateTotal";
+import { AddItemForm } from "./components/AddItemForm";
 
 export const InvoiceApp = () => {
 
@@ -33,19 +34,11 @@ export const InvoiceApp = () => {
 
   // REACT HOOKS.
   // useState HOOKS.
+  const [ activeForm, setActiveForm ] = useState(false);
   const [ invoice, setInvoice ] = useState(defaultInvoice);
   const [ total, setTotal ] = useState(0);
   const [ items, setItems ] = useState([]);
   const { id, description, client, company } = invoice;
-  const [ formItem, setFormItem ] = useState(
-    {
-      refe: '',
-      product: '',
-      price: '',
-      quantity: '',
-    }
-  );
-  const { refe, product, price, quantity } = formItem;
 
   // useEffect HOOKS.
   useEffect( () => {
@@ -53,19 +46,12 @@ export const InvoiceApp = () => {
     setInvoice(data);
     setItems(data.items);
   }, [] );
-  
+
   useEffect( () => {
     setTotal(calculateTotal(items))
   }, [items]);
 
   // EVENT HANDLER.
-  const onInputChange = ({ target: { name, value } }) => {
-    setFormItem({
-      ...formItem,
-      [name]: value,
-    });
-  }
-
   const onAddItem = ({refe, product, price, quantity}) => {
     setItems([...items,
       {
@@ -76,41 +62,12 @@ export const InvoiceApp = () => {
       }]);
   }
 
-  const onAddItemSubmit = (event) => {
-    event.preventDefault(); // Avoids auto-refreshing the web page (default behavior).
+  const onDeleteItem = (index) => {
+    setItems(items.filter((_, i) => i !== index));
+  }
 
-    // Product input conditional:
-    if(refe.trim().length <= 1) return;
-
-    // Product input conditional:
-    if(product.trim().length <= 1) return;
-
-    // Price input conditionals:
-    if(price.trim().length < 1) return;
-    // In case no value was entered, triggers an alert.
-    if( isNaN(price.trim()) ) {
-      alert('Error: invalid price value.')
-      return
-    };
-
-    // Quantity input conditionals:
-    if(quantity.trim().length < 1) return;
-    // In case no value was entered, triggers an alert.
-    if( isNaN(price.trim()) ) {
-      alert('Error: invalid quantity value.')
-      return
-    };
-
-    // new item is added to current items.
-    onAddItem(formItem);
-
-    // formItem is reset.
-    setFormItem({
-      refe: '',
-      product: '',
-      price: '',
-      quantity: '',
-    });
+  const onActiveForm = () => {
+    setActiveForm(!activeForm);
   }
 
   return (
@@ -137,52 +94,17 @@ export const InvoiceApp = () => {
               <ClientDetails client={client} />
 
               {/* INVOICE PRODUCTS TABLE */}
-              <ProductsTable items={items} />
+              <ProductsTable items={items} handler={ (index) => {onDeleteItem(index)} } />
 
-              {/* BUTTON TO ADD NEW ITEM */}
-              <button className="btn btn-secondary">
-                {/* { !activeForm ? 'New item' : 'Close' } */}
-                New item
+              {/* BUTTON TO DISPLAY/HIDE ADD ITEM FORM */}
+              <button
+              className="btn btn-secondary"
+              onClick={onActiveForm}>
+                {!activeForm ? 'New item' : 'Close' }
               </button>
 
-              <form className="w-50" onSubmit={onAddItemSubmit}>
-
-                <input
-                type="text"
-                name="refe"
-                placeholder="Reference..."
-                value={refe}
-                onChange={event => onInputChange(event)}
-                className="form-control m-3" />
-                <input
-                type="text"
-                name="product"
-                placeholder="Product name..."
-                value={product}
-                onChange={event => onInputChange(event)}
-                className="form-control m-3" />
-                <input
-                type="text"
-                name="price"
-                placeholder="Price..."
-                value={price}
-                onChange={event => onInputChange(event)}
-                className="form-control m-3" />
-                <input
-                type="text"
-                name="quantity"
-                placeholder="Quantity..."
-                value={quantity}
-                onChange={event => onInputChange(event)}
-                className="form-control m-3" />
-
-                <button
-                type="submit"
-                className="btn btn-success m-3">
-                  Add
-                </button>
-
-              </form>
+              {/* ADD ITEM FORM */}
+              { !activeForm ||< AddItemForm handler={(newItem) => {onAddItem(newItem)}} /> }
 
               {/* INVOICE TOTAL */}
               <InvoiceTotal total={total} />

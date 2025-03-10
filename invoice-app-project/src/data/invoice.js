@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';  // Import UUID
 // invoice: JS Object that contains all the data of the invoice.
 export const invoice = {
   id: uuidv4(),
-  description: 'COMPRAS VARIAS',
+  description: 'Tech sales',
   client: {
     firstName: 'Aldous',
     lastName: 'Caldous',

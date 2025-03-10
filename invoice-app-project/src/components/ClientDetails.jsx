@@ -1,7 +1,6 @@
 export const ClientDetails = ({client}) => {
 
   return (
-    <>
       <div>
         <h3>Client details</h3>
         <ul className="list-group">
@@ -10,6 +9,5 @@ export const ClientDetails = ({client}) => {
           <li className="list-group-item">{client.address.street}, {client.address.number}</li>
         </ul>
       </div>
-    </>
   );
 }
