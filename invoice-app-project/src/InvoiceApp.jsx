@@ -4,6 +4,7 @@ import { InvoiceDetails } from "./components/InvoiceDetails";
 import { ClientDetails } from "./components/ClientDetails";
 import { ProductsTable } from "./components/ProductsTable";
 import { InvoiceTotal } from "./components/InvoiceTotal";
+import { calculateTotal } from "./services/calculateTotal";
 
 export const InvoiceApp = () => {
 
@@ -33,13 +34,20 @@ export const InvoiceApp = () => {
   // REACT HOOKS.
   // useState HOOKS.
   const [ invoice, setInvoice ] = useState(defaultInvoice);
-  const { id, description, client, company,  items, total } = invoice;
+  const [ total, setTotal ] = useState(0);
+  const [ items, setItems ] = useState([]);
+  const { id, description, client, company } = invoice;
 
   // useEffect HOOKS.
   useEffect( () => {
     const data = getInvoice();
     setInvoice(data);
+    setItems(data.items);
   }, [] );
+  
+  useEffect( () => {
+    setTotal(calculateTotal(items))
+  }, [items]);
 
   return (
     <>
